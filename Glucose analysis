@@ -1,0 +1,57 @@
+
+
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Load the data
+file_path = 'glucose_data.csv'  # Replace with your file path
+data = pd.read_csv(file_path)
+
+# Convert timestamp to datetime
+data['timestamp'] = pd.to_datetime(data['timestamp'])
+
+# Descriptive statistics
+descriptive_stats = data['glucose_level'].describe()
+print("Descriptive Statistics:")
+print(descriptive_stats)
+
+# Time-series analysis: resampling to daily average
+daily_avg = data.set_index('timestamp').resample('D').mean()
+
+# Plotting the daily average glucose levels
+plt.figure(figsize=(12, 6))
+plt.plot(daily_avg.index, daily_avg['glucose_level'], marker='o', linestyle='-')
+plt.title('Daily Average Glucose Levels')
+plt.xlabel('Date')
+plt.ylabel('Glucose Level')
+plt.grid(True)
+plt.show()
+
+# Histogram of glucose levels
+plt.figure(figsize=(12, 6))
+plt.hist(data['glucose_level'], bins=30, edgecolor='k', alpha=0.7)
+plt.title('Distribution of Glucose Levels')
+plt.xlabel('Glucose Level')
+plt.ylabel('Frequency')
+plt.grid(True)
+plt.show()
+
+# Identifying periods of hypoglycemia (glucose level < 70 mg/dL)
+hypoglycemia = data[data['glucose_level'] < 70]
+print("Hypoglycemia Events:")
+print(hypoglycemia)
+
+# Save the hypoglycemia events to a CSV file
+hypoglycemia.to_csv('hypoglycemia_events.csv', index=False)
+
+
+
+This script performs the following tasks:
+
+    Loads glucose data from a CSV file.
+    Converts the timestamp to a datetime object.
+    Calculates descriptive statistics for the glucose levels.
+    Resamples the data to get daily average glucose levels and plots them.
+    Plots a histogram of the glucose levels.
+    Identifies and prints periods of hypoglycemia (glucose levels below 70 mg/dL) and saves these events to a CSV file.
